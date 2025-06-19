@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Your Order | SSR Bakery</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+  <style>
+    :root {
+      --first-color: hsl(28, 88%, 62%);
+      --first-color-alt: hsl(28, 84%, 58%);
+      --title-color: hsl(0, 0%, 95%);
+      --text-color: hsl(0, 0%, 75%);
+      --black-color: hsl(0, 0%, 6%);
+      --body-color: hsl(0, 0%, 6%);
+      --container-color: hsl(0, 0%, 10%);
+      --glass: rgba(255, 255, 255, 0.08);
+      --blur: blur(16px);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url(assets/img/home-bg.jpg);
+      color: var(--text-color);
+    }
+
+    .container {
+      max-width: 70%;
+      margin: 5rem auto;
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--title-color);
+    }
+
+    form, .cake-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input, select, button {
+      padding: 1rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    input::placeholder {
+      color: #ddd;
+    }
+
+    .cake-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    .cake-card {
+      background: var(--container-color);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-radius: 1rem;
+      padding: 1rem;
+      width: 120px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--title-color);
+    }
+
+    .cake-card input {
+      display: none;
+    }
+
+    .cake-card img {
+      width: 80px;
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+    }
+
+    .cake-card:hover, .cake-card input:checked + img {
+      outline: 2px solid var(--first-color);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--container-color);
+      padding: 2rem;
+      border-radius: 1rem;
+      color: var(--title-color);
+      text-align: center;
+    }
+
+    .thank-you {
+      display: none;
+      text-align: center;
+      margin-top: 2rem;
+      animation: fadeIn 1s ease-in-out forwards;
+      color: var(--first-color);
+    }
+
+    button {
+      background-color: var(--first-color);
+      color: var(--black-color);
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: var(--first-color-alt);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    :root {
+      --first-color: hsl(28, 88%, 62%);
+      --first-color-alt: hsl(28, 84%, 58%);
+      --title-color: hsl(0, 0%, 95%);
+      --text-color: hsl(0, 0%, 75%);
+      --black-color: hsl(0, 0%, 6%);
+      --body-color: hsl(0, 0%, 6%);
+      --container-color: hsl(0, 0%, 10%);
+      --glass: rgba(255, 255, 255, 0.08);
+      --blur: blur(16px);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--body-color);
+      color: var(--text-color);
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 5rem auto;
+      background: var(--glass);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: var(--title-color);
+    }
+
+    form, .cake-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input, select, button {
+      padding: 1rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    input::placeholder {
+      color: #ddd;
+    }
+
+    .cake-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      gap: 1rem;
+    }
+
+    .cake-card {
+      background: var(--container-color);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border-radius: 1rem;
+      padding: 1rem;
+      width: 45%;
+      max-width: 140px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--title-color);
+      box-sizing: border-box;
+    }
+
+    .cake-card input {
+      display: none;
+    }
+
+    .cake-card img {
+      width: 80px;
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+    }
+
+    .cake-card:hover, .cake-card input:checked + img {
+      outline: 2px solid var(--first-color);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--container-color);
+      padding: 2rem;
+      border-radius: 1rem;
+      color: var(--title-color);
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .thank-you {
+      display: none;
+      text-align: center;
+      margin-top: 2rem;
+      animation: fadeIn 1s ease-in-out forwards;
+      color: var(--first-color);
+    }
+
+    button {
+      background-color: var(--first-color);
+      color: var(--black-color);
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: var(--first-color-alt);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media screen and (max-width: 600px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+      }
+
+      .cake-card {
+        width: 100%;
+        max-width: none;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Place Your Cake Order</h2>
+    <form id="orderForm">
+      <input type="text" name="name" placeholder="Your Name" required>
+
+      <div class="cake-options">
+        <label class="cake-card">
+          <input type="radio" name="cake" value="Chocochip-Cookie-Cake" data-price="600" required>
+          <img src="assets/img/favorite-cake-3.png" alt="Choco">
+          <span>Chocochip<br>₹600</span>
+        </label>
+        <label class="cake-card">
+          <input type="radio" name="cake" value="Waterfall-Chocolate" data-price="500">
+          <img src="/assets/img/favorite-cake-1.png" alt="Waterfall">
+          <span>Waterfall<br>₹500</span>
+        </label>
+        <!-- Add more cake options -->
+      </div>
+
+      <input type="number" id="quantity" placeholder="Quantity" required>
+      <input type="text" name="time" placeholder="Pickup Time" required>
+      <input type="text" id="totalPrice" placeholder="Total Price" readonly>
+      <button type="button" onclick="showSummary()">Continue to Pay</button>
+    </form>
+
+    <div class="thank-you" id="thankYou">
+      <h3>🎉 Thank you for your order!</h3>
+      <p>Your cake is being prepared with love 💕</p>
+    </div>
+  </div>
+
+  <div class="modal" id="summaryModal">
+    <div class="modal-content">
+      <h3>Confirm Your Order</h3>
+      <p id="summaryText"></p>
+      <button onclick="confirmAndPay()">Confirm & Pay</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    function showSummary() {
+      const selected = document.querySelector('input[name="cake"]:checked');
+      const quantity = parseInt(document.getElementById("quantity").value);
+      if (!selected || !quantity) return alert("Fill all fields");
+
+      const name = document.querySelector('[name="name"]').value;
+      const time = document.querySelector('[name="time"]').value;
+      const price = parseInt(selected.dataset.price);
+      const cake = selected.value;
+      const total = price * quantity;
+
+      document.getElementById("summaryText").innerHTML = `Cake: ${cake}<br>Qty: ${quantity}<br>Total: ₹${total}`;
+      document.getElementById("summaryModal").style.display = "flex";
+
+      window._orderData = { name, cake, quantity, time, total };
+      document.getElementById("totalPrice").value = "₹" + total;
+    }
+
+    function closeModal() {
+      document.getElementById("summaryModal").style.display = "none";
+    }
+
+    function confirmAndPay() {
+      closeModal();
+      const d = window._orderData;
+      const options = {
+        key: "YOUR_RAZORPAY_KEY",
+        amount: d.total * 100,
+        currency: "INR",
+        name: "SSR Bakery",
+        description: `Cake Order - ${d.cake}`,
+        handler: function (response) {
+          document.getElementById("orderForm").reset();
+          document.getElementById("thankYou").style.display = "block";
+        },
+        prefill: {
+          name: d.name
+        },
+        theme: {
+          color: "#FBAE3C"
+        }
+      };
+      var rzp = new Razorpay(options);
+      rzp.open();
+    }
+  </script>
+</body>
+</html>

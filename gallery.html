@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SSR Bakery | Cake Menu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" />
+  <style>
+    :root {
+      --first-color: hsl(28, 88%, 62%);
+      --first-color-alt: hsl(28, 84%, 58%);
+      --title-color: hsl(0, 0%, 95%);
+      --text-color: hsl(0, 0%, 75%);
+      --black-color: hsl(0, 0%, 6%);
+      --body-color: hsl(0, 0%, 6%);
+      --container-color: hsl(0, 0%, 10%);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--body-color);
+      color: var(--text-color);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+
+    h1 {
+      color: var(--first-color);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .cake-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .cake-card {
+      background: var(--container-color);
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+      color: var(--title-color);
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    .cake-card img {
+      width: 100%;
+      height: auto;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .cake-card select, .cake-card input, .cake-card button {
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: none;
+    }
+
+    .cake-card button {
+      background: var(--first-color);
+      color: var(--black-color);
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .cake-card button:hover {
+      background: var(--first-color-alt);
+    }
+
+    .cart {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--container-color);
+      padding: 1rem;
+      border-radius: 1rem;
+      max-width: 300px;
+      color: var(--title-color);
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    .cart h2 {
+      margin-top: 0;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .checkout-button {
+      background-color: var(--first-color);
+      color: var(--black-color);
+      padding: 0.75rem;
+      width: 100%;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+
+    .checkout-button:hover {
+      background-color: var(--first-color-alt);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Choose Your Cake</h1>
+    <div class="cake-grid" id="cakeGrid">
+      <!-- Cake cards injected by JS -->
+    </div>
+  </div>
+
+  <div class="cart" id="cart">
+    <h2>Your Cart</h2>
+    <div id="cartItems"></div>
+    <p><strong>Total: ₹<span id="cartTotal">0</span></strong></p>
+    <button class="checkout-button" onclick="goToCheckout()">Proceed to Checkout</button>
+  </div>
+
+  <script>
+    const cakes = [
+      {
+        name: "Chocochip-Cookie-Cake",
+        price: 600,
+        image: "favorite-cake-1.png"
+      },
+      {
+        name: "Waterfall-Chocolate",
+        price: 500,
+        image: "favorite-cake-2.png"
+      },
+      {
+        name: "Gulab-Rasmalai",
+        price: 650,
+        image: "favorite-cake-3.png"
+      },
+    ];
+
+    const cart = [];
+
+    function renderCakes() {
+      const grid = document.getElementById("cakeGrid");
+      cakes.forEach((cake, index) => {
+        const card = document.createElement("div");
+        card.className = "cake-card";
+        card.innerHTML = `
+          <img src="${cake.image}" alt="${cake.name}">
+          <h3>${cake.name}</h3>
+          <p>₹${cake.price}</p>
+          <select id="size-${index}">
+            <option value="3">0.5kg</option>
+            <option value="1">1kg</option>
+            <option value="2">2kg</option>
+          </select>
+          <input type="number" id="qty-${index}" min="1" placeholder="Quantity">
+          <button onclick="addToCart(${index})">Add to Cart</button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function addToCart(index) {
+      const qty = parseInt(document.getElementById(`qty-${index}`).value) || 1;
+      const size = parseInt(document.getElementById(`size-${index}`).value);
+      const item = cakes[index];
+      const total = item.price * size * qty;
+      cart.push({ name: item.name, qty, size, total });
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartDiv = document.getElementById("cartItems");
+      const totalDiv = document.getElementById("cartTotal");
+      cartDiv.innerHTML = "";
+      let total = 0;
+      cart.forEach((item) => {
+        const el = document.createElement("div");
+        el.className = "cart-item";
+        el.innerText = `${item.qty} × ${item.name} (${item.size}kg)`;
+        cartDiv.appendChild(el);
+        total += item.total;
+      });
+      totalDiv.innerText = total;
+    }
+
+    function goToCheckout() {
+      const query = encodeURIComponent(JSON.stringify(cart));
+      window.location.href = `checkout.html?cart=${query}`;
+    }
+
+    renderCakes();
+  </script>
+</body>
+</html>
